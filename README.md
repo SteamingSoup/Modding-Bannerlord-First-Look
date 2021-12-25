@@ -21,9 +21,10 @@ Dll files are short for Dyamic Link Library, which is a type of file that contai
 Inside the "ModTest" folder I will also create a new file called "SubModule.xml". This file will inform the launcher of my mod. Inside the "bin" folder I will create a folder called "Win64_Shipping_Client". This will be the output path for the build after compiling code files.
 
 The file structure inside the Module folder should look like this:
-
+```
 Modules/
 ├─ ModTest/
 │  ├─ bin/
 │  │  ├─ Win64_Shipping_Client/
 │  ├─ SubModule.xml
+```
