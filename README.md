@@ -112,6 +112,92 @@ The MBSubModuleBase class is the entry point to the code and it will handle the 
 
 Here are the results:
 
-Make sure to activate the mod in the mod menu. It should show up as ModTest
+Make sure to activate the mod in the mod menu. It should show up as Mod Test.
 
-![ModTest](/images/ModTestpng)
+![ModTest](/images/ModTest.png)
+
+
+And on the main menu we should see a "Message" button and clicking it prints "Hello Worlds!" onto the main menu.
+
+![Message](/images/message_bannerlord.png)
+
+super simple mod, but it is a start. Let's move on to adding a message into the in-game tip menu.
+
+## Adding text to in-game tip menu
+This mod is simply editing an xml file within the game directory. The xml file in question is the "EscapeMenu.xml". This file can be found in the "Mount and Blade II Bannerlord folder where you will navigate to > Modules > Native > GUI > Prefabs. Copy the "EscapeMenu.xml" file then go to the "ModTest" folder in "Modules". Within the "ModTest" folder make a new folder called "GUI". In the "GUI" folder make a new folder called "Prefabs", then paste the "EscapeMenu.xml" file here. This folder will house all the UI information for the mod.
+
+The file structure should now look like this:
+```
+Modules/
+├─ ModTest/
+│  ├─ bin/
+│  │  ├─ Win64_Shipping_Client/
+│  ├─ GUI/
+│  │  ├─ Prefabs/
+│  │  │  ├─ EscapeMenu.xml
+│  ├─ SubModule.xml
+```
+
+Open the "EscapeMenu.xml" file with visual studio code. I will edit the xml where it says "GameTip.Text" and change the Text value to say "This is a modded tip". The file should look like this now:
+```
+<Prefab>
+  <Constants>
+    <Constant Name="EscapeMenu.Background.Width" BrushName="EscapeMenu.Background" BrushLayer="Default" BrushValueType="Width"/>
+    <Constant Name="EscapeMenu.Background.Height" BrushName="EscapeMenu.Background" BrushLayer="Default" BrushValueType="Height"/>
+
+    <Constant Name="ContextButton.Width" BrushName="ButtonBrush2" BrushLayer="Default" BrushValueType="Width"/>
+    <Constant Name="ContextButton.Height" BrushName="ButtonBrush2" BrushLayer="Default" BrushValueType="Height"/>
+  </Constants>
+  <Window>
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.4">
+      <Children>
+
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!EscapeMenu.Background.Width" SuggestedHeight="!EscapeMenu.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPGeneral\EscapeMenu\escape_panel">
+          <Children>
+            <ListPanel DataSource = "{MenuItems}" Id="MyInnerPanel" StackLayout.LayoutMethod = "VerticalBottomToTop" WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginTop="100" MarginBottom="115" >
+              <ItemTemplate>
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!ContextButton.Width" SuggestedHeight="!ContextButton.Height" HorizontalAlignment="Center" VerticalAlignment="Center" MarginBottom="30" UseSiblingIndexForNavigation="true">
+                  <Children>
+                    
+                    <EscapeMenuButtonWidget DoNotPassEventsToChildren="true" Command.Click="ExecuteAction" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviorBrush="ButtonBrush1" IsDisabled="@IsDisabled" IsPositiveBehaviored="@IsPositiveBehaviored">
+                      <Children>
+                        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" PositionYOffset="1" Text="@ActionText" Brush="OverlayPopup.ButtonText" ClipContents="false"/>
+                      </Children>
+                    </EscapeMenuButtonWidget>
+
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@IsDisabled">
+                      <Children>
+                        <HintWidget DataSource="{DisabledHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
+                      </Children>
+                    </Widget>
+                    
+                  </Children>
+                </Widget>
+              </ItemTemplate>
+            </ListPanel>
+          </Children>
+        </Widget>
+
+
+        <ListPanel DataSource="{Tips}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod = "VerticalBottomToTop" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="165" MarginBottom="250">
+          <Children>
+            <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" Brush="GameTip.Title.Text" Text="@GameTipTitle" HorizontalAlignment="Center" MarginBottom="15" ClipContents="false"/>
+            <!--Tip Box-->
+            <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" Brush="EscapeMenu.GameTip">
+              <Children>
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="150" IsEnabled="false"/>
+                <RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" Brush="GameTip.Text" MarginTop="15" MarginBottom="15" MarginRight="55" MarginLeft="55" Text="This is a modded tip" VerticalAlignment="Center"/>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="43" SuggestedHeight="56" HorizontalAlignment="Left" VerticalAlignment="Center" Command.Click="ExecutePreviousTip" Brush="ButtonRightArrowBrush1" MarginLeft="3" IsVisible="@NavigationButtonsEnabled"/>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="43" SuggestedHeight="56" HorizontalAlignment="Right" VerticalAlignment="Center" Command.Click="ExecuteNextTip" Brush="ButtonLeftArrowBrush1" MarginRight="3" IsVisible="@NavigationButtonsEnabled"/>
+              </Children>
+            </BrushWidget>
+          </Children>
+        </ListPanel>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>
+```
+
+Once this is done we can load up the game with the "ModTest" mod enabled and see the tips text "This is a modded tip" in the tip box in our escape menu.
