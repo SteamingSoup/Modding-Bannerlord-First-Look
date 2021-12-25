@@ -108,4 +108,7 @@ namespace ModTest
     }
 }
 ```
-The MBSubModuleBase class is the entry point to the code and it will handle the loading of the module.
+The MBSubModuleBase class is the entry point to the code and it will handle the loading of the module. Protected override void OnSubModuleLoad() sets up an override for the OnSubModuleLoad() inherited method. The rest of the code simply adds a new object that we called "Message", which will show up on the main menu as "Message", and when this is clicked it will display a message that says "Hello World!". 
+
+Here are the results:
+
