@@ -28,3 +28,84 @@ Modules/
 │  │  ├─ Win64_Shipping_Client/
 │  ├─ SubModule.xml
 ```
+
+Now that the setup is complete I can continue to making the mods.
+
+## Adding main menu button
+The first things that needs to be done is editing the "SubModule.xml" file. Open the file in visual studio code and add the following code:
+```
+ <Module>
+     <Name value="Mod Test"/>
+     <Id value="ModTest"/>
+     <Version value="v1.0.0"/>
+     <SingleplayerModule value="true"/>
+     <MultiplayerModule value="false"/>
+     <DependedModules>
+         <DependedModule Id="Native"/>
+         <DependedModule Id="SandBoxCore"/>
+         <DependedModule Id="Sandbox"/>
+         <DependedModule Id="CustomBattle"/>
+         <DependedModule Id="StoryMode" />
+     </DependedModules>
+     <SubModules>
+         <SubModule>
+             <Name value="ModTest"/>
+             <DLLName value="ModTest.dll"/>
+             <SubModuleClassType value="ModTest.Main"/>
+             <Tags>
+                 <Tag key="DedicatedServerType" value="none" />
+                 <Tag key="IsNoRenderModeElement" value="false" />
+             </Tags>
+         </SubModule>
+     </SubModules>
+     <Xmls/>
+ </Module>
+ ```
+ 
+ Under Module the values for Name and Id was changed to "Mod Test" and "ModTest", respectively. Under SubModule the values for the Name, DLLName, and SubModuleClassType was changed to "ModTest", "ModTest.dll". and "ModTest.Main", respectively. All other values, Ids, or keys can be left as is.
+ 
+ Here is a description of each element in the XML:
+ * Name - The name of your Module.
+ * Id - The id of your Module (do not use spaces).
+ * Version - The current version of your Module.
+ * SinglePlayerModule - Whether or not your module is meant for Single Player mode.
+ * MultiPlayerModule - Whether or not your module is meant for Multi Player mode.
+ * DependedModules - Modules that your module requires in order to function properly.
+ * SubModules - The SubModules (DLLs) that your modules consists of.
+ * Xmls - Contains Paths to XML files in the ModuleData Folder(s)
+
+Save this file then proceed to open visual studio. In visual studio go ahead and create a new project and choose "Class Library (.NET Framework) as the project template. The project name should match the actual module name, which in this case is ModTest, then click create.
+
+In visual studio go to the "Project" tab at the top, then go to "ModTest properties". In the left hand panel go to "Build" then go down to "Output path". Click "browse" next to Output path to designate the folder you will assign as the output path. This folder will be the "Win64_Shipping_Client" made earlier.
+
+In visual studio on the right you should see "Class1.cs" under ModTest. Rename this source code file to "Main.cs".
+
+To add the dependencies go to "Project" tab at then click "add reference". Click "Browse" then go to the Mount & Blade II Bannerlord folder. Click on the "bin" folder then the "Win64_Shipping_Client" folder. Note that these are not the folders located in the ModTest folder. From here add all the TaleWorlds binaries. From here click "Build" at the top of visual studio then click "Build Solution". This will build to the output path that was setup earlier.
+
+To makes a main menu item that will output a message on the main menu we will use the following code:
+```
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TaleWorlds.Core;
+using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
+
+namespace ModTest
+{
+    public class Main : MBSubModuleBase
+    {
+        protected override void OnSubModuleLoad()
+        {
+         Module.CurrentModule.AddInitialStateOption(new InitialStateOption("Message",
+            new TextObject("Message", null),
+            9990,
+            () => { InformationManager.DisplayMessage(new InformationMessage("Hello World!")); },
+            () => { return (false, null); }));
+        }
+    }
+}
+```
+The MBSubModuleBase class is the entry point to the code and it will handle the loading of the module.
