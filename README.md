@@ -112,3 +112,6 @@ The MBSubModuleBase class is the entry point to the code and it will handle the 
 
 Here are the results:
 
+Make sure to activate the mod in the mod menu. It should show up as ModTest
+
+![ModTest](/images/ModTestpng)
